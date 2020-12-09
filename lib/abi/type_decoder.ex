@@ -232,8 +232,7 @@ defmodule ABI.TypeDecoder do
     {value, rest}
   end
 
-  @spec decode_type(FunctionSelector.type(), binary(), binary()) ::
-          {any(), binary(), binary()}
+  @spec decode_type(FunctionSelector.type(), binary()) :: {any(), binary()}
   defp decode_type({:uint, size_in_bits}, data) do
     decode_uint(data, size_in_bits)
   end
@@ -290,9 +289,10 @@ defmodule ABI.TypeDecoder do
   end
 
   defp decode_type(:string, data) do
-    decode_type(:bytes, data)
+    decode_type(:bytes, data, data)
   end
 
+  @spec decode_type(FunctionSelector.type(), binary(), binary()) :: {any(), binary()}
   defp decode_type({:array, type}, data, full_data) do
     {offset, rest_bytes} = decode_uint(data, 256)
     <<_padding::binary-size(offset), rest_data::binary>> = full_data
